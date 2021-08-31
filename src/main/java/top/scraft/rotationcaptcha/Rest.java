@@ -44,7 +44,7 @@ public class Rest {
             Graphics2D g = processed.createGraphics();
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g.setClip(new Ellipse2D.Double(0, 0, size, size));
-            g.rotate(rotateRad, size / 2.0, size / 2.0);
+            g.rotate(-rotateRad, size / 2.0, size / 2.0);
             g.drawImage(original, 0, 0, size, size, null);
             g.dispose();
 
@@ -66,7 +66,10 @@ public class Rest {
             return ResponseEntity.badRequest().body("no session");
         }
         float rotateDeg = (float) session.getAttribute(SESSION_KEY);
-        float offset = Math.abs(rotateDeg - value) % 360.0F;
+        float offset = Math.abs(rotateDeg - value);
+        if (offset >= 360.0F) {
+            offset -= 360.0F;
+        }
         if (offset < 25.0F) {
             return ResponseEntity.ok("验证成功");
         } else {
