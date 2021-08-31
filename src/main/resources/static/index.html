@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>RotationCaptchaDemo</title>
+  <style>
+    #captcha {
+      width: 120px;
+      height: 120px;
+      border-radius: 100%;
+      overflow: hidden;
+    }
+
+    #captcha img {
+      width: 120px;
+      height: 120px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="captcha">
+    <img src="/api/captcha">
+  </div>
+  <input id="slide" type="range" value="0" min="0" max="360" step="0.1">
+  <p id="test">0</p>
+  <button id="submit">验证</button>
+
+  <script>
+    window.onload = function () {
+      let captcha = document.getElementById('captcha');
+      let slide = document.getElementById('slide');
+      let test = document.getElementById('test');
+      slide.onchange = function () {
+        test.innerHTML = this.value;
+        captcha.style.transform = 'rotate(' + this.value + 'deg)';
+      }
+      document.getElementById('submit').onclick = function () {
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if ((xhr.status === 200) || (xhr.status == 401)) {
+              alert(xhr.responseText);
+            }
+          }
+        }
+        this.disabled = true;
+        xhr.open("POST", "/api/captcha", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.send("value=" + slide.value);
+      }
+    };
+  </script>
+</body>
+
+</html>
